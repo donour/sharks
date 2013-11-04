@@ -8,16 +8,17 @@ __author__ = 'Donour Sizemore'
 import socket
 
 PROTOCOL_VERSION = "1.0"
-VERBOSITY = 2
+VERBOSITY = 0
 
 class Transmitter:
-    def __init__(self, port = 55555):
+    def __init__(self, location, port = 55555):
         self.seqnum = 0
         self.port = port
+        self.loc = location
         
     def send(self, host_list, timestamp, weight, height): 
-        msgstring = "%s,SHARKNET1, %s, %d, %d, %.3f,--,--,--,--,--,--" %\
-                    (PROTOCOL_VERSION, timestamp, self.seqnum, weight, height)
+        msgstring = "%s,SHARKNET1,%d,%d,%s,%d,%.3f,--,--,--,--,--,--" %\
+                    (PROTOCOL_VERSION, timestamp, self.seqnum, self.loc, weight, height)
         msg = bytes(msgstring,'UTF-8')
 
         if VERBOSITY > 1:            

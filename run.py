@@ -6,11 +6,11 @@ import transmitter
 if __name__ == "__main__":
     import time
     
-    t = transmitter.Transmitter()
+    t = transmitter.Transmitter("LF")
 
     while True:
         hosts = ['172.16.8.151', '172.16.8.93']
         h = ride_height.height()
 
-        t.send(hosts, str(time.time()*1000), 0, h)
-        time.sleep(0.1)
+        t.send(hosts, int(time.time()*1000), 0, h)
+        time.sleep(0.01)
