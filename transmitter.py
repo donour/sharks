@@ -17,8 +17,8 @@ class Transmitter:
         self.loc = location
         
     def send(self, host_list, timestamp, weight, height): 
-        msgstring = "%s,SHARKNET1,%d,%d,%s,%d,%.3f,--,--,--,--,--,--" %\
-                    (PROTOCOL_VERSION, timestamp, self.seqnum, self.loc, weight, height)
+        msgstring = "%s,SHARKNET1,%d,%d,%s,%d,%.3f,1,2,3,4,5,6" %\
+                    (PROTOCOL_VERSION, timestamp % 1e5, self.seqnum, self.loc, weight, height)
         msg = bytes(msgstring,'UTF-8')
 
         if VERBOSITY > 1:            
