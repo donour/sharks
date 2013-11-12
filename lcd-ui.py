@@ -26,7 +26,7 @@ class Display:
         self.lcd.backlight(self.lcd.GREEN)
         line1 = datetime.datetime.now().strftime("%H:%M:%S")
         line2 = "RPI"
-        self.lcd.message("\r" + line1 + "\n" + line2)
+        self.lcd.message(line1 + "\n" + line2)
 
     def buttons(self):
         """
@@ -53,5 +53,5 @@ if __name__ == "__main__":
         if len(buttons) > 0:
             if d.lcd.SELECT in buttons:
                 d.disable()
-        time.sleep(0.25)
+        time.sleep(0.1)
         
