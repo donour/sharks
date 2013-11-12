@@ -2,9 +2,11 @@
 
 import random
 
+start = 0.0
 def height():
-
-    return random.random()
+    global start
+    start += 0.01
+    return start
 
 if __name__ == "__main__":
     import sys,time
