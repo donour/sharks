@@ -6,7 +6,7 @@ import SocketServer, socket
 PROTOCOL_VERSION="1.0"
 VERBOSITY = 99
 
-last_msg = ""
+last_msg = None
 
 class SharksDataHandler(SocketServer.BaseRequestHandler):
     def handle(self):
@@ -26,9 +26,24 @@ class recv_server:
         print "sending"
         self.reg_sock.sendto("HELO", (host,self.port+1))
 
-    def get_sample(self):
-        self.sock.handle_request()
-        
+    def get_sample(self):      
+        res = None
+
+        global last_msg
+        last_msg = ""
+        while last_msg is not None:
+            last_msg = None
+            self.sock.handle_request()
+            if last_msg is not None:
+                vals = last_msg.split(',')
+                if len(vals) > 6:
+                    try:
+                        res =float(vals[6])
+                    except:
+                        res = None
+
+        return res
+    
 if __name__ == "__main__":
     host = "192.168.0.1"
     s = recv_server(host)
@@ -37,10 +52,13 @@ if __name__ == "__main__":
     while True:
         freq = 100
         for i in range(0,freq):
-            s.get_sample()
-            if last_msg is not None:
-                print last_msg
-                last_msg = None
+            r = s.get_sample()
+            if r is not None: print r
+            #if last_msg is not None:
+            #    vals = last_msg.split(',')
+            #    if len(vals) > 6:
+            #        print vals[6]
+            #    last_msg = None
             time.sleep(1.0/freq)           
         s.register(host)
 
