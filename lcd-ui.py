@@ -5,10 +5,12 @@ Sharks LCD UI controller. Python2
 """
 __author__='Donour Sizemore'
 
+import time
+
 import adafruit.Adafruit_CharLCDPlate as af
 import client
 
-
+VERBOSITY = 0
 class Display:
 
     def __init__(self):
@@ -41,20 +43,41 @@ class Display:
                 result.append(b)
 
         return result
+
+    def settings_menu(self, options = ['option1', 'option2', 'option3']):
+        done = False
+        selected_option = 0
+        while done == False and len(options) > 0:
+            self.lcd.backlight(self.lcd.BLUE)
+            self.lcd.clear()
+
+            line1 = "SelectConfig  +-"
+            line2 = options[selected_option % len(options)]
+            self.lcd.message(line1 + "\n" + line2)
+            
+            buttons = self.buttons()
+            if self.lcd.SELECT in buttons:
+                done = True
+            if self.lcd.UP in buttons:
+                selected_option += 1
+            if self.lcd.DOWN in buttons:
+                selected_option -= 1
+
+            time.sleep(0.1)
+        
     
 if __name__ == "__main__":
-    import datetime,time
+    import datetime
+    
+    freq = 6 # display update frequency
 
     d = Display()
     d.set_startup()
-    time.sleep(1)
 
     host = "192.168.0.1"
     cli = client.recv_server(host)
 
-
     while True:
-        freq = 10
         cli.register(host)
         for i in range(0,freq):
             sample = cli.get_sample()
@@ -63,6 +86,6 @@ if __name__ == "__main__":
                 d.refresh("%.5f" % sample)
             buttons = d.buttons()
             if len(buttons) > 0:
-                if d.lcd.SELECT in buttons:
-                    d.disable()
+                if d.lcd.RIGHT in buttons:
+                    d.settings_menu()
             time.sleep(1.0/freq)

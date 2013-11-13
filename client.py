@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 ###############################################################################
+__author__ = 'Donour Sizemore'
 
 import SocketServer, socket
 
@@ -55,11 +56,6 @@ if __name__ == "__main__":
         for i in range(0,freq):
             r = s.get_sample()
             if r is not None: print r
-            #if last_msg is not None:
-            #    vals = last_msg.split(',')
-            #    if len(vals) > 6:
-            #        print vals[6]
-            #    last_msg = None
             time.sleep(1.0/freq)           
         s.register(host)
 
