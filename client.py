@@ -23,7 +23,8 @@ class recv_server:
         self.reg_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
     def register(self, host):
-        print "sending"
+        if VERBOSITY > 0:
+            print "i: Registering:", host
         self.reg_sock.sendto("HELO", (host,self.port+1))
 
     def get_sample(self):      

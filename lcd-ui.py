@@ -6,6 +6,8 @@ Sharks LCD UI controller. Python2
 __author__='Donour Sizemore'
 
 import adafruit.Adafruit_CharLCDPlate as af
+import client
+
 
 class Display:
 
@@ -21,11 +23,10 @@ class Display:
         self.lcd.clear()
         self.lcd.backlight(self.lcd.OFF)
         
-    def refresh(self):
+    def refresh(self, line2="---"):
         self.lcd.clear()
         self.lcd.backlight(self.lcd.GREEN)
         line1 = datetime.datetime.now().strftime("%H:%M:%S")
-        line2 = "RPI"
         self.lcd.message(line1 + "\n" + line2)
 
     def buttons(self):
@@ -46,12 +47,22 @@ if __name__ == "__main__":
 
     d = Display()
     d.set_startup()
-    time.sleep(3)
+    time.sleep(1)
+
+    host = "192.168.0.1"
+    cli = client.recv_server(host)
+
+
     while True:
-        d.refresh()
-        buttons = d.buttons()
-        if len(buttons) > 0:
-            if d.lcd.SELECT in buttons:
-                d.disable()
-        time.sleep(0.1)
-        
+        freq = 10
+        cli.register(host)
+        for i in range(0,freq):
+            sample = cli.get_sample()
+            if(sample != None):
+                print sample
+                d.refresh("%.5f" % sample)
+            buttons = d.buttons()
+            if len(buttons) > 0:
+                if d.lcd.SELECT in buttons:
+                    d.disable()
+            time.sleep(1.0/freq)
