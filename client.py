@@ -5,7 +5,7 @@ __author__ = 'Donour Sizemore'
 import SocketServer, socket
 
 PROTOCOL_VERSION="1.0"
-VERBOSITY = 99
+VERBOSITY = 0
 
 last_msg = None
 
@@ -40,7 +40,7 @@ class recv_server:
                 vals = last_msg.split(',')
                 if len(vals) > 6:
                     try:
-                        res =float(vals[6])
+                        res =(vals[4], float(vals[6]))
                     except:
                         res = None
 

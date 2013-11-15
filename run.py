@@ -9,15 +9,21 @@ UPDATE_FREQ = 20.0
 REG_TIME = 60.0 # seconds
 PORT = 55555
 
-if __name__ == "__main__":
-    import time
+VERBOSITY = 0
 
+if __name__ == "__main__":
+    import time, sys
+
+    if len(sys.argv) < 3:
+        print("usage: %s <CORNER ID> <ip address>" % sys.argv[0])
+        sys.exit(-1)
+    else:
+        corner = sys.argv[1]
+        addr = sys.argv[2]
+    
     reg_port = PORT+1
-    lf = transmitter.Transmitter("LF")
-    lr = transmitter.Transmitter("LR")
-    rf = transmitter.Transmitter("RF")
-    rr = transmitter.Transmitter("RR")
-    r = reg_server('192.168.0.1', reg_port)
+    t = transmitter.Transmitter(corner)
+    r = reg_server(addr, reg_port)
 
     clients = {}
     
@@ -27,17 +33,16 @@ if __name__ == "__main__":
 
         for host in hosts:
             clients[host] = time.time()+ REG_TIME
-            s = host + ":" + str(clients[host]) # 
-            print(s)
+            s = host + ":" + str(clients[host]) 
+            if VERBOSITY > 1:
+                print(s)
             
 
         now = time.time()
         h = ride_height.height()
         for host in clients.keys():
             if now < clients[host]:
-                lf.send([host], int(now*1000), 0, h)
-                lr.send([host], int(now*1000), 0, h)
-                rf.send([host], int(now*1000), 0, h)
-                rr.send([host], int(now*1000), 0, h)            
-                sys.stdout.write(".");sys.stdout.flush()
+                t.send([host], int(now*1000), 0, h)
+                if VERBOSITY > 1:
+                    sys.stdout.write(".");sys.stdout.flush()
         time.sleep(1.0/UPDATE_FREQ)

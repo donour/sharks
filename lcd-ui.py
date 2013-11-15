@@ -82,8 +82,9 @@ if __name__ == "__main__":
         for i in range(0,freq):
             sample = cli.get_sample()
             if(sample != None):
-                print sample
-                d.refresh("%.5f" % sample)
+                if VERBOSITY > 0:
+                    print sample
+                d.refresh(str( sample))
             buttons = d.buttons()
             if len(buttons) > 0:
                 if d.lcd.RIGHT in buttons:
