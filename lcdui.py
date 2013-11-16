@@ -5,7 +5,7 @@ Sharks LCD UI controller. Python2
 """
 __author__='Donour Sizemore'
 
-import time
+import time, datetime
 
 import adafruit.Adafruit_CharLCDPlate as af
 import client
@@ -67,7 +67,6 @@ class Display:
         
     
 if __name__ == "__main__":
-    import datetime
     
     freq = 6 # display update frequency
 

@@ -1,15 +1,14 @@
 #!/usr/bin/env bash
 ###############################################################################
-###############################################################################
 #
+###############################################################################
 
 export SETNUM=3
 export POSITION=LF
 export SSID=MWRSCALE$SETNUM
 
-
 export SERVERFILE=/home/pi/git/sharks/run.py
-export CLIENTFILE=/home/pi/git/sharks/lcd-ui.py
+export CLIENTFILE=/home/pi/git/sharks/lcdui.py
 
 case $POSITION in
 LF) export IPADDR=192.168.0.1;;
