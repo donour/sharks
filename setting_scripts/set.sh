@@ -3,7 +3,7 @@
 #
 ###############################################################################
 
-export SETNUM=3
+export SETNUM=2
 export POSITION=LF
 export SSID=MWRSCALE$SETNUM
 
@@ -17,6 +17,11 @@ LR) export IPADDR=192.168.0.2;;
 RF) export IPADDR=192.168.0.3;;
 RR) export IPADDR=192.168.0.4;;
 esac
+
+echo Set Scale Label
+export HEADERFILE="/etc/sharks.header"
+echo SET$SETNUM\:$POSITION > $HEADERFILE
+
 
 echo Set SSID
 export HOSTAPDTMPFILE="/tmp/hostapd.conf"
