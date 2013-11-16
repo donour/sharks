@@ -100,7 +100,7 @@ if __name__ == "__main__":
     host = addr
     cli = client.recv_server(host)
 
-    #status_animation = ["<( 0-0 )>"," (>0-0 )>"," (>0-0<) ","<( 0-0<) " ]
+
     status_animation =  []
     status_animation.append(" ^-------")
     status_animation.append(" -^------")
@@ -117,7 +117,6 @@ if __name__ == "__main__":
     status_animation.append(" --^-----")
     status_animation.append(" -^------")
     
-
     animation_count = 0.0
     if VERBOSITY > 0:
         print "LCD UI Starting:", header, config_options, host 
