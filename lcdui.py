@@ -100,8 +100,25 @@ if __name__ == "__main__":
     host = addr
     cli = client.recv_server(host)
 
-    status_animation = ["<( 0-0 )>"," (>0-0 )>"," (>0-0<) ","<( 0-0<) " ]  
-    animation_count = 0
+    #status_animation = ["<( 0-0 )>"," (>0-0 )>"," (>0-0<) ","<( 0-0<) " ]
+    status_animation =  []
+    status_animation.append(" ^-------")
+    status_animation.append(" -^------")
+    status_animation.append(" --^-----")
+    status_animation.append(" ---^----")
+    status_animation.append(" ----^---")
+    status_animation.append(" -----^--")
+    status_animation.append(" ------^-")
+    status_animation.append(" -------^")
+    status_animation.append(" ------^-")
+    status_animation.append(" -----^--")
+    status_animation.append(" ----^---")
+    status_animation.append(" ---^----")
+    status_animation.append(" --^-----")
+    status_animation.append(" -^------")
+    
+
+    animation_count = 0.0
     if VERBOSITY > 0:
         print "LCD UI Starting:", header, config_options, host 
     while True:
@@ -111,7 +128,7 @@ if __name__ == "__main__":
             if(sample != None):
                 if VERBOSITY > 1:
                     print sample
-                d.refresh(str(sample), status_animation[animation_count])
+                d.refresh(str(sample), status_animation[int(animation_count)%len(status_animation)])
             buttons = d.buttons()
             if len(buttons) > 0:
                 if d.lcd.RIGHT in buttons:
@@ -119,4 +136,4 @@ if __name__ == "__main__":
                     if config is not None:
                         os.system(config_dir + "/"+config)
             time.sleep(1.0/freq)
-            animation_count = (animation_count + 1) % len(status_animation)
+            animation_count = (animation_count + 1)
