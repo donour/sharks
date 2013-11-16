@@ -35,8 +35,9 @@ cp NETCONFIGTMPFILE /etc/network/interfaces
 echo Start Scale Server
 echo Set Scale LCD
 export STARTSCRIPT=/scales.sh
-echo /usr/bin/env python3 $SERVERFILE $POSITION $IPADDR \& > $STARTSCRIPT
-echo /usr/bin/env python2 $CLIENTFILE                   \& >> $STARTSCRIPT
-
+echo /usr/bin/python2 $CLIENTFILE                   2\> /var/log/sharks-lcd.log    \& >  $STARTSCRIPT
+echo /usr/bin/python3 $SERVERFILE $POSITION $IPADDR 2\> /var/log/sharks-server.log \& >>  $STARTSCRIPT
+echo exit 0                                                                           >>  $STARTSCRIPT
+cp $STARTSCRIPT /etc/rc.local
 echo Reboot
-#reboot
+reboot
