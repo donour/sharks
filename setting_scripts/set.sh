@@ -9,6 +9,7 @@ export SSID=MWRSCALE$SETNUM
 
 export SERVERFILE=/home/pi/git/sharks/run.py
 export CLIENTFILE=/home/pi/git/sharks/lcdui.py
+export MSGFILE=/home/pi/git/sharks/set-red-message.py
 
 case $POSITION in
 LF) export IPADDR=192.168.0.1;;
@@ -60,5 +61,9 @@ echo /usr/bin/python2 $CLIENTFILE                   2\> /var/log/sharks-lcd.log 
 echo /usr/bin/python3 $SERVERFILE $POSITION $IPADDR 2\> /var/log/sharks-server.log \& >>  $STARTSCRIPT
 echo exit 0                                                                           >>  $STARTSCRIPT
 cp $STARTSCRIPT /etc/rc.local
+
 echo Reboot
+killall python2
+killall python3
+/usr/bin/python2 $MSGFILE "Rebooting..."; sleep 2
 reboot
