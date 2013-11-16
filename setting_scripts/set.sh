@@ -3,8 +3,8 @@
 #
 ###############################################################################
 
-export SETNUM=3
-export POSITION=LF
+export SETNUM=2
+export POSITION=RF
 export SSID=MWRSCALE$SETNUM
 
 export SERVERFILE=/home/pi/git/sharks/run.py
@@ -47,6 +47,14 @@ echo macaddr_acl=0                 >>  $HOSTAPDTMPFILE
 echo wmm_enabled=1                 >>  $HOSTAPDTMPFILE
 echo eap_reauth_period=360000000   >>  $HOSTAPDTMPFILE
 
+export WPACLIENTFILE="/etc/wpa-client.conf"
+echo "ctrl_interface=/var/run/wpa_supplicant" >  $WPACLIENTFILE
+echo "network={"                              >> $WPACLIENTFILE
+echo "   ssid=\"$SSID\""                      >> $WPACLIENTFILE
+echo "   key_mgmt=WPA-PSK"                    >> $WPACLIENTFILE
+echo "   psk=\"5057501807\""                  >> $WPACLIENTFILE
+echo "}"                                      >> $WPACLIENTFILE
+
 echo Set LF as AP and others as STA
 
 if [ "$POSITION" = "LF" ]
@@ -59,10 +67,10 @@ if [ "$POSITION" = "LF" ]
     # turn AP off
     rm /etc/hostapd/hostapd.conf
     # turn sta on
-    echo /sbin/iwconfig wlan0 essid $SSID            >>  $STARTSCRIPT
-    echo /sbin/ifconfig wlan0 $IPADDR                >>  $STARTSCRIPT
-    echo /usr/bin/killall wpa_supplicant             >>  $STARTSCRIPT
-    echo /sbin/wpa_supplicant /etc/wpa-client.config >>  $STARTSCRIPT
+    echo /sbin/iwconfig wlan0 essid $SSID                                                    >>  $STARTSCRIPT
+    echo /sbin/ifconfig wlan0 $IPADDR                                                        >>  $STARTSCRIPT
+    echo /usr/bin/killall wpa_supplicant                                                     >>  $STARTSCRIPT
+    echo /sbin/wpa_supplicant -c$WPACLIENTFILE -iwlan0 -Dwext 2\> /var/log/wpa-client.log \& >>  $STARTSCRIPT
 
 fi
 
@@ -83,11 +91,10 @@ echo Start Scale Server
 echo Set Scale LCD
 echo /usr/bin/python2 $CLIENTFILE           $IPADDR 2\> /var/log/sharks-lcd.log    \& >>  $STARTSCRIPT
 echo /usr/bin/python3 $SERVERFILE $POSITION $IPADDR 2\> /var/log/sharks-server.log \& >>  $STARTSCRIPT
-echo exit 0                                                                           >>  $STARTSCRIPT
 cp $STARTSCRIPT /etc/rc.local
 
 echo Reboot
 killall python2
 killall python3
 /usr/bin/python2 $MSGFILE "Rebooting..."; sleep 2
-reboot
+#reboot

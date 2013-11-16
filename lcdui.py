@@ -58,10 +58,10 @@ class Display:
         selected_option = 0
         while done == False and len(options) > 0:
             self.lcd.backlight(self.lcd.BLUE)
-            self.lcd.clear()
+            self.lcd.home()
 
             line1 = "SelectConfig  +-"
-            line2 = options[selected_option % len(options)]
+            line2 = options[selected_option % len(options)] + ' '*16
             self.lcd.message(line1 + "\n" + line2)
             
             buttons = self.buttons()
@@ -102,12 +102,14 @@ if __name__ == "__main__":
 
     status_animation = ["<( 0-0 )>"," (>0-0 )>"," (>0-0<) ","<( 0-0<) " ]  
     animation_count = 0
+    if VERBOSITY > 0:
+        print "LCD UI Starting:", header, config_options, host 
     while True:
         cli.register(host)
         for i in range(0,freq):
             sample = cli.get_sample()
             if(sample != None):
-                if VERBOSITY > 0:
+                if VERBOSITY > 1:
                     print sample
                 d.refresh(str(sample), status_animation[animation_count])
             buttons = d.buttons()
