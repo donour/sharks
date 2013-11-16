@@ -3,13 +3,16 @@
 #
 ###############################################################################
 
-export SETNUM=2
-export POSITION=LR
+export SETNUM=3
+export POSITION=LF
 export SSID=MWRSCALE$SETNUM
 
 export SERVERFILE=/home/pi/git/sharks/run.py
 export CLIENTFILE=/home/pi/git/sharks/lcdui.py
 export MSGFILE=/home/pi/git/sharks/set-red-message.py
+
+export STARTSCRIPT=/scales.sh
+echo "#Sharks starup" > $STARTSCRIPT
 
 case $POSITION in
 LF) export IPADDR=192.168.0.1;;
@@ -48,13 +51,18 @@ echo Set LF as AP and others as STA
 
 if [ "$POSITION" = "LF" ]
     then
+    echo AP;
     # turn AP on
     cp $HOSTAPDTMPFILE /etc/hostapd/hostapd.conf
-    echo AP;
     else
+    echo STA ;
     # turn AP off
     rm /etc/hostapd/hostapd.conf
-    echo STA ;
+    # turn sta on
+    echo /sbin/iwconfig wlan0 essid $SSID            >>  $STARTSCRIPT
+    echo /sbin/ifconfig wlan0 $IPADDR                >>  $STARTSCRIPT
+    echo /usr/bin/killall wpa_supplicant             >>  $STARTSCRIPT
+    echo /sbin/wpa_supplicant /etc/wpa-client.config >>  $STARTSCRIPT
 
 fi
 
@@ -73,8 +81,7 @@ cp $NETCONFIGTMPFILE /etc/network/interfaces
 
 echo Start Scale Server
 echo Set Scale LCD
-export STARTSCRIPT=/scales.sh
-echo /usr/bin/python2 $CLIENTFILE           $IPADDR 2\> /var/log/sharks-lcd.log    \& >   $STARTSCRIPT
+echo /usr/bin/python2 $CLIENTFILE           $IPADDR 2\> /var/log/sharks-lcd.log    \& >>  $STARTSCRIPT
 echo /usr/bin/python3 $SERVERFILE $POSITION $IPADDR 2\> /var/log/sharks-server.log \& >>  $STARTSCRIPT
 echo exit 0                                                                           >>  $STARTSCRIPT
 cp $STARTSCRIPT /etc/rc.local
@@ -83,4 +90,4 @@ echo Reboot
 killall python2
 killall python3
 /usr/bin/python2 $MSGFILE "Rebooting..."; sleep 2
-reboot
+#reboot
