@@ -96,5 +96,6 @@ cp $STARTSCRIPT /etc/rc.local
 echo Reboot
 killall python2
 killall python3
-/usr/bin/python2 $MSGFILE "Rebooting..."; sleep 2
-#reboot
+/usr/bin/python2 $MSGFILE "Rebooting..."; 
+reboot
+/usr/bin/python2 $MSGFILE "Reboot Failed\nPower Cycle"; 
