@@ -90,4 +90,4 @@ echo Reboot
 killall python2
 killall python3
 /usr/bin/python2 $MSGFILE "Rebooting..."; sleep 2
-#reboot
+reboot
