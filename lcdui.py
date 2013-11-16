@@ -6,7 +6,7 @@ Sharks LCD UI controller. Python2
 __author__='Donour Sizemore'
 
 import time, datetime
-import os
+import os,sys
 import adafruit.Adafruit_CharLCDPlate as af
 import client
 
@@ -18,7 +18,6 @@ class Display:
         self.refresh()
         self.last_button_press = None
     
-
     def set_startup(self):
         self.lcd.clear()
         self.lcd.backlight(self.lcd.RED)
@@ -28,9 +27,12 @@ class Display:
         self.lcd.backlight(self.lcd.OFF)
         
     def refresh(self, line2="---", status = ""):
-        self.lcd.clear()
+        self.lcd.home()
         self.lcd.backlight(self.lcd.GREEN)
         line1 = self.header + status
+
+        line1 += ' '*16
+        line2 += ' '*16
         self.lcd.message(line1 + "\n" + line2)
 
     def buttons(self):
@@ -81,6 +83,12 @@ if __name__ == "__main__":
     
     freq = 8 # display update frequency
 
+    if len(sys.argv) < 2:
+        print("usage: %s <ip address>" % sys.argv[0])
+        sys.exit(-1)
+    else:
+        addr = sys.argv[1]
+
     fd = file("/etc/sharks.header", "r");
     header = fd.read().strip()
 
@@ -89,7 +97,7 @@ if __name__ == "__main__":
     d = Display(header)
     d.set_startup()
 
-    host = "192.168.0.1"
+    host = addr
     cli = client.recv_server(host)
 
     status_animation = ["<( 0-0 )>"," (>0-0 )>"," (>0-0<) ","<( 0-0<) " ]  

@@ -4,7 +4,7 @@
 ###############################################################################
 
 export SETNUM=2
-export POSITION=LF
+export POSITION=LR
 export SSID=MWRSCALE$SETNUM
 
 export SERVERFILE=/home/pi/git/sharks/run.py
@@ -43,9 +43,21 @@ echo auth_algs=3                   >>  $HOSTAPDTMPFILE
 echo macaddr_acl=0                 >>  $HOSTAPDTMPFILE
 echo wmm_enabled=1                 >>  $HOSTAPDTMPFILE
 echo eap_reauth_period=360000000   >>  $HOSTAPDTMPFILE
-cp $HOSTAPDTMPFILE /etc/hostapd/hostapd.conf
 
 echo Set LF as AP and others as STA
+
+if [ "$POSITION" = "LF" ]
+    then
+    # turn AP on
+    cp $HOSTAPDTMPFILE /etc/hostapd/hostapd.conf
+    echo AP;
+    else
+    # turn AP off
+    rm /etc/hostapd/hostapd.conf
+    echo STA ;
+
+fi
+
 
 echo Set IP Address
 export NETCONFIGTMPFILE="/tmp/new.net.config"
@@ -62,7 +74,7 @@ cp $NETCONFIGTMPFILE /etc/network/interfaces
 echo Start Scale Server
 echo Set Scale LCD
 export STARTSCRIPT=/scales.sh
-echo /usr/bin/python2 $CLIENTFILE                   2\> /var/log/sharks-lcd.log    \& >   $STARTSCRIPT
+echo /usr/bin/python2 $CLIENTFILE           $IPADDR 2\> /var/log/sharks-lcd.log    \& >   $STARTSCRIPT
 echo /usr/bin/python3 $SERVERFILE $POSITION $IPADDR 2\> /var/log/sharks-server.log \& >>  $STARTSCRIPT
 echo exit 0                                                                           >>  $STARTSCRIPT
 cp $STARTSCRIPT /etc/rc.local
