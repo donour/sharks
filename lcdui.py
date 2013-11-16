@@ -12,11 +12,12 @@ import client
 
 VERBOSITY = 0
 class Display:
-
     def __init__(self, header = "MWRSCALE"):
         self.header = header
         self.lcd = af.Adafruit_CharLCDPlate()
         self.refresh()
+        self.last_button_press = None
+    
 
     def set_startup(self):
         self.lcd.clear()
@@ -37,12 +38,17 @@ class Display:
         Poll all hardware buttons and return list of active buttons
         """
         result = []
+        if self.last_button_press is not None:
+            if time.time() - self.last_button_press < 0.25:
+                return result
+        
         btns = [self.lcd.SELECT, self.lcd.LEFT, self.lcd.UP, self.lcd.DOWN, self.lcd.RIGHT]
         for b in btns:
             r = self.lcd.buttonPressed(b)
             if r != 0:
                 result.append(b)
 
+        self.last_button_press = time.time()
         return result
 
     def settings_menu(self, options = ['option1', 'option2', 'option3']):
@@ -59,6 +65,8 @@ class Display:
             buttons = self.buttons()
             if self.lcd.SELECT in buttons:
                 done = True
+            elif self.lcd.LEFT in buttons:
+                return None
             elif self.lcd.UP in buttons:
                 selected_option += 1
             elif self.lcd.DOWN in buttons:
@@ -71,7 +79,7 @@ class Display:
 if __name__ == "__main__":
     config_dir = '/sharks.configs'
     
-    freq = 6 # display update frequency
+    freq = 8 # display update frequency
 
     fd = file("/etc/sharks.header", "r");
     header = fd.read().strip()
@@ -98,6 +106,7 @@ if __name__ == "__main__":
             if len(buttons) > 0:
                 if d.lcd.RIGHT in buttons:
                     config = d.settings_menu(config_options)
-                    os.system(config_dir + "/"+config)
+                    if config is not None:
+                        os.system(config_dir + "/"+config)
             time.sleep(1.0/freq)
             animation_count = (animation_count + 1) % len(status_animation)
